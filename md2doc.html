@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MD to DOCX Converter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body class="bg-gray-100 h-screen flex items-center justify-center">
+    <div id="app" class="bg-white p-8 rounded-lg shadow-md w-96">
+        <h1 class="text-2xl font-bold mb-4 text-center">MD to DOCX Converter</h1>
+        <div 
+            @dragover.prevent
+            @drop.prevent="handleDrop"
+            class="border-dashed border-2 border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:bg-gray-50 transition duration-300"
+        >
+            <p v-if="!file" class="text-gray-500">
+                Drag and drop your .md file here, or click to select
+            </p>
+            <p v-else class="text-green-500">
+                {{ file.name }} selected
+            </p>
+            <input 
+                type="file" 
+                ref="fileInput" 
+                @change="handleFileSelect" 
+                accept=".md" 
+                class="hidden"
+            >
+        </div>
+        <button 
+            @click="convertFile" 
+            :disabled="!file"
+            class="mt-4 w-full bg-blue-500 text-white py-2 rounded-lg hover:bg-blue-600 transition duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+            Convert to DOCX
+        </button>
+        <p v-if="message" class="mt-4 text-center" :class="messageClass">
+            {{ message }}
+        </p>
+    </div>
+
+    <script>
+        const { createApp, ref } = Vue
+
+        createApp({
+            setup() {
+                const file = ref(null)
+                const message = ref('')
+                const messageClass = ref('')
+                const fileInput = ref(null)
+
+                const handleDrop = (e) => {
+                    const droppedFile = e.dataTransfer.files[0]
+                    if (droppedFile && droppedFile.name.endsWith('.md')) {
+                        file.value = droppedFile
+                        message.value = ''
+                    } else {
+                        message.value = 'Please drop a .md file'
+                        messageClass.value = 'text-red-500'
+                    }
+                }
+
+                const handleFileSelect = (e) => {
+                    const selectedFile = e.target.files[0]
+                    if (selectedFile && selectedFile.name.endsWith('.md')) {
+                        file.value = selectedFile
+                        message.value = ''
+                    } else {
+                        message.value = 'Please select a .md file'
+                        messageClass.value = 'text-red-500'
+                    }
+                }
+
+                const convertFile = () => {
+                    if (!file.value) return
+
+                    const formData = new FormData()
+                    formData.append('file', file.value)
+
+                    message.value = 'Converting...'
+                    messageClass.value = 'text-blue-500'
+
+                    fetch('/convert', {
+                        method: 'POST',
+                        body: formData
+                    })
+                    .then(response => {
+                        if (!response.ok) throw new Error('Conversion failed')
+                        return response.blob()
+                    })
+                    .then(blob => {
+                        const url = window.URL.createObjectURL(blob)
+                        const a = document.createElement('a')
+                        a.style.display = 'none'
+                        a.href = url
+                        a.download = file.value.name.replace('.md', '.docx')
+                        document.body.appendChild(a)
+                        a.click()
+                        window.URL.revokeObjectURL(url)
+                        message.value = 'Conversion successful!'
+                        messageClass.value = 'text-green-500'
+                    })
+                    .catch(error => {
+                        console.error('Error:', error)
+                        message.value = 'Conversion failed. Please try again.'
+                        messageClass.value = 'text-red-500'
+                    })
+                }
+
+                return {
+                    file,
+                    message,
+                    messageClass,
+                    fileInput,
+                    handleDrop,
+                    handleFileSelect,
+                    convertFile
+                }
+            }
+        }).mount('#app')
+    </script>
+</body>
+</html>
