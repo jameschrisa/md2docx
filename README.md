@@ -1,13 +1,13 @@
-# md2docx.py
+# MD to DOCX Converter
 
-md2docx.py is a Python script that converts Markdown (.md) files to Microsoft Word (.docx) format. It preserves basic formatting such as headers, paragraphs, and lists.
+This project provides both a command-line tool and a web-based interface for converting Markdown (.md) files to Microsoft Word (.docx) format.
 
 ## Features
 
+- Command-line interface for quick conversions
+- Web-based user interface with drag-and-drop functionality
 - Converts Markdown to Word document format
 - Preserves basic Markdown formatting (headers, paragraphs, lists)
-- Easy-to-use command-line interface
-- Automatically installs required dependencies
 
 ## Requirements
 
@@ -16,31 +16,26 @@ md2docx.py is a Python script that converts Markdown (.md) files to Microsoft Wo
 
 ## Installation
 
-1. Clone this repository or download the `md2docx.py` file.
+1. Clone this repository or download the project files.
 
-2. (Optional but recommended) Create a virtual environment:
+2. If you haven't already, create and activate a virtual environment:
    ```
-   python -m venv md2docx_env
+   python -m venv venv
+   source venv/bin/activate  # On Unix or MacOS
+   # OR
+   venv\Scripts\activate  # On Windows
    ```
 
-3. Activate the virtual environment:
-   - On Windows:
-     ```
-     md2docx_env\Scripts\activate
-     ```
-   - On macOS and Linux:
-     ```
-     source md2docx_env/bin/activate
-     ```
-
-4. The script will automatically install required dependencies when run for the first time. If you prefer to install them manually, use:
+3. Install the required dependencies:
    ```
-   pip install markdown python-docx beautifulsoup4
+   pip install markdown python-docx beautifulsoup4 flask
    ```
 
 ## Usage
 
-1. Ensure your virtual environment is activated (if you're using one).
+### Command-line Interface
+
+1. Ensure your virtual environment is activated.
 
 2. Run the script:
    ```
@@ -49,30 +44,43 @@ md2docx.py is a Python script that converts Markdown (.md) files to Microsoft Wo
 
 3. Follow the prompts to enter the paths for your input Markdown file and desired output Word document.
 
-4. The script will convert your Markdown file and save the resulting Word document at the specified location.
+### Web-based Interface
 
-## Example
+1. Ensure your virtual environment is activated.
 
-```
-$ python md2docx.py
-Enter the path to the input Markdown file: /path/to/your/input.md
-Enter the path for the output Word document: /path/to/your/output.docx
-Conversion complete. Output saved to /path/to/your/output.docx
-```
+2. Run the Flask application:
+   ```
+   python app.py
+   ```
+
+3. Open a web browser and go to `http://localhost:5000`.
+
+4. Drag and drop a Markdown file onto the designated area, or click to select a file.
+
+5. Click the "Convert to DOCX" button to start the conversion.
+
+6. The converted file will be automatically downloaded once the conversion is complete.
+
+## Project Structure
+
+- `md2docx.py`: The core Python script that performs the Markdown to DOCX conversion.
+- `app.py`: The Flask server that handles file conversion and serves the web application.
+- `templates/index.html`: The HTML file containing the user interface for the web application.
 
 ## Limitations
 
-- The script currently supports basic Markdown formatting. Advanced features like tables, code blocks, or inline HTML are not fully supported.
+- The converter currently supports basic Markdown formatting. Advanced features like tables, code blocks, or inline HTML are not fully supported.
 - Images in the Markdown file are not included in the Word document.
 
 ## Troubleshooting
 
-- If you encounter any "module not found" errors, ensure that you've activated your virtual environment (if using one) and that all dependencies are installed.
+- If you encounter any module import errors, ensure that you've activated your virtual environment and that all dependencies are installed.
 - For permission-related errors, make sure you have read access to the input file and write access to the output directory.
+- If the web page doesn't load, check that the Flask server is running and that you're using the correct URL.
 
 ## Contributing
 
-Contributions to improve md2docx.py are welcome! Please feel free to submit a Pull Request.
+Contributions to improve the MD to DOCX Converter are welcome! Please feel free to submit a Pull Request.
 
 ## License
 
